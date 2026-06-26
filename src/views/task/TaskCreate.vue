@@ -3,6 +3,7 @@
     import { ref, computed,onMounted } from 'vue'
     import { useRoute, useRouter } from 'vue-router'
     import Multiselect from 'vue-multiselect'
+    import MultipleSelect from '@/components/Select/Custom/MultipleSelect.vue'
     import axios from 'axios'
 
     interface TaskForm {
@@ -340,6 +341,10 @@
                                         track-by="code" :options="subDep" :multiple="true" :taggable="true"></multiselect>
                             <pre class="language-json"><code>{{ result_dep }}</code></pre>
                         </div>
+                        <multiple-select
+                            :original-item="subDep" v-model="formData.departments_engaged"
+                        >
+                        </multiple-select>
                     </div>
                     <!-- Actions -->
                     <div class="flex gap-3 pt-4 border-t border-gray-200">
