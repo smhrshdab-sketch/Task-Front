@@ -22,7 +22,7 @@
     }
     interface member{
         id: number
-        name: string
+        title: string
     }
      interface departmentBlock{
         id: number
@@ -327,20 +327,10 @@
                         </p>
                     </div>
                     <div class="flex justify-around p-1">
-                        <div class="p-4 bg-blue-200 rounded-xl hover:bg-blue-300">
-                            <label class="typo__label">Colleagues: </label>
-                            <!-- <pre class="language-json"><code>{{ colleague }}</code></pre> -->
-                            <multiselect id="colleague" v-model="formData.memberships_engaged" tag-placeholder="Add this as new tag" placeholder="Search or add a tag" label="name"
-                                        track-by="code" :options="colleague" :multiple="true" :taggable="true" ></multiselect>
-                            <pre class="language-json"><code>{{ result_co }}</code></pre>
-                        </div>
-                        <div class="p-4 bg-blue-200 rounded-xl hover:bg-blue-300">
-                            <label class="typo__label">sub Departments: </label>
-                            <!-- <pre class="language-json"><code>{{ subDep }}</code></pre> -->
-                            <multiselect id="department" v-model="formData.departments_engaged" placeholder="Search . . ." label="title"
-                                        track-by="code" :options="subDep" :multiple="true" :taggable="true"></multiselect>
-                            <pre class="language-json"><code>{{ result_dep }}</code></pre>
-                        </div>
+                        <multiple-select
+                            :original-item="colleague" v-model="formData.memberships_engaged"
+                        >
+                        </multiple-select>
                         <multiple-select
                             :original-item="subDep" v-model="formData.departments_engaged"
                         >
