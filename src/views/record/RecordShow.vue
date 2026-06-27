@@ -4,6 +4,7 @@
     import axios from 'axios'
     import RecordHero from '@/components/Hero.vue'
     import Switcher from '@/components/Switch.vue'
+    import LogTable from '@/components/Table/LogTable.vue'
     //==============
     interface Log {
         id: number
@@ -92,6 +93,11 @@
     const handleCancel = () => {
         router.push('/')
     }
+    const handleViewDetail = (log:Log) => {
+    // Navigate to detail page or open modal
+    console.log('Viewing log:', log)
+    // router.push(`/audit-logs/${log.id}`)
+}
     onMounted(() => {
         fetchLogs()
     })
@@ -139,6 +145,12 @@
                     :hasCrud=false
                 >
                 </CrudTable> -->
+                <LogTable 
+                    :logs="logs" 
+                    :loading="isLoading"
+                    @view-detail="handleViewDetail"
+                >
+                </LogTable>
             <div v-if="!isLoading && filteredLogs.length === 0" class="text-center py-12">
                 <p class="text-gray-500">No departments found</p>
                 <button
@@ -149,7 +161,6 @@
                     Clear search
                 </button>
             </div>
-            <Switcher></Switcher>
         </div>
     </div>
 </template>
