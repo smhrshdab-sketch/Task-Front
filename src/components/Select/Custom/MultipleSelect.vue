@@ -50,7 +50,7 @@ const removeItem = (id: number) => {
                 @remove="removeItem"
             ></Element>
             <p v-if="selectedItems.length === 0" class="text-gray-400 text-sm italic">
-                Select Departments
+                Select Items
             </p>
         </div>
 
