@@ -5,6 +5,7 @@
     import RecordHero from '@/components/Hero.vue'
     import Switcher from '@/components/Switch.vue'
     import LogTable from '@/components/Table/LogTable.vue'
+    import Pagination from '@/components/Pagination.vue'
     //==============
     interface Log {
         id: number
@@ -25,9 +26,12 @@
     //==============
     const router = useRouter()
     const currentPage = ref(1)
-    const totalPages = ref(1)
+    const totalPages = ref()
+    const perPages = ref()
     const totalItems = ref(0)
+    const paginatePage = ref<number>(1)
     const logs = ref<Log[]>([])
+    const logPage = ref<number>(1)
     const title = ref('')
     const headers = ref<String[]>([])
     const isLoading = ref(true)
@@ -47,7 +51,7 @@
             log.description.toLowerCase().includes(search)
         )
     })
-    const fetchLogs = async () => {
+    const fetchLogs = async (page = 1) => {
         isLoading.value = true
         errorMessage.value = ''
         
@@ -57,12 +61,23 @@
                 router.push('/login')
                 return
             }
+            const payload = {
+                limit : 10,
+                search : '',
+                page : page
+            }
             const x_dep_id = localStorage.getItem('X-Department-Id')
             const response = await axios.get(`${API_URL}/audit`, {
                 headers: {
                     'Authorization': `Bearer ${token}`,
-                    'X-Department-Id':x_dep_id
-                }
+                    'Content-Type': 'application/json',
+                    'X-Department-Id': x_dep_id || '10'
+                },
+                params: {
+                    page: paginatePage.value,
+                    limit: 10,
+                    search: ''
+                }               
             })
             
             //logs.value = response.data.data || response.data
@@ -71,9 +86,10 @@
                 title.value = result.title
                 headers.value = result.headers
                 logs.value = result.data
-                currentPage.value = result.pagination?.current_page || 1
-                totalPages.value = result.pagination?.last_page || 1
-                totalItems.value = result.pagination?.total || 0
+                currentPage.value = result.current_page || 1
+                totalPages.value = result.last_page || 1
+                totalItems.value = result.total || 0
+                perPages.value = result.perPages || 10
                 console.log('current result:', result)
                 console.log('✅ Success! Loaded', logs.value.length, 'memberships')
                 console.log('current log:', logs.value)
@@ -94,12 +110,17 @@
         router.push('/')
     }
     const handleViewDetail = (log:Log) => {
-    // Navigate to detail page or open modal
-    console.log('Viewing log:', log)
-    // router.push(`/audit-logs/${log.id}`)
-}
+        // Navigate to detail page or open modal
+        console.log('Viewing log:', log)
+        // router.push(`/audit-logs/${log.id}`)
+    }
+    const paginateInfo = (page:number) => {
+        console.info(`paginate emit number: `,page)
+        paginatePage.value = page
+        fetchLogs(paginatePage.value)
+    }
     onMounted(() => {
-        fetchLogs()
+        fetchLogs(1)
     })
 </script>
 <template>
@@ -160,6 +181,20 @@
                 >
                     Clear search
                 </button>
+            </div>
+            <div v-else>
+                <Pagination
+                    :current-page="paginatePage"
+                    :total-pages="totalPages"
+                    :maxVisible="perPages"
+                    :showFirstLast="true"
+                    :showPreviousNext="true"
+                    :showPageNumbers="true"
+                    :showInfo="true"
+                    :variant="default"
+                    @page-change="paginateInfo"
+                >                    
+                </Pagination>
             </div>
         </div>
     </div>
