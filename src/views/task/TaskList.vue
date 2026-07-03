@@ -4,7 +4,7 @@
     import axios from 'axios'
     import TaskHero from '@/components/Task/TaskHero.vue'
     import TaskBlock from '@/components/Task/TaskBlock.vue'
-
+    import GradientRing from '@/components/GradientRing.vue'
     interface Task {
         id: number
         title: string
@@ -160,4 +160,17 @@
             </div>
         </div>
     </div>
+    <GradientRing
+        :outer-radius="80" 
+        :inner-radius="60"
+        :angle="153"
+        :percentage="75"
+        color1="#10B981"
+        color2="#6a6d1e"
+        label-format="percentage"
+        sub-label="Completion"
+        :label-font-size="32"
+        :sub-label-font-size="14"
+    >
+    </GradientRing>
 </template>
