@@ -114,7 +114,7 @@
   </div>
   <div 
         v-if="attachmentList"
-        class="flex flex-col gap-2 bg-blue-100 shadow-2xl P-2" 
+        class="flex flex-col gap-2 bg-blue-100 shadow-2xl P-2 m-2 max-w-72" 
         v-for="(attach,index) in attachmentList" 
         :key="index"
     >
