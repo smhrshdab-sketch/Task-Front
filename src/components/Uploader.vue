@@ -13,6 +13,7 @@
     const attachmentList = ref<Attachment[]>([])
     const attachedFiles = ref<File[]>([]) 
     const isDragging = ref<boolean>(false)
+    const allowedTypes = ['image/jpeg', 'image/png', 'application/pdf', 'application/zip'];
 
     const triggerUpload = () => {
         console.log(fileInput.value)
@@ -28,9 +29,13 @@
         attachedFiles.value.forEach(file => {
             console.log('Processing file:', file.name)        
             if (file) {
-                    if (file.size > 25 * 1024 * 1024) {
+                if (file.size > 25 * 1024 * 1024) {
                     alert("File size have to less than 25MB")
                     return
+                }
+                if (!allowedTypes.includes(file.type)) {
+                    alert("The file format is not compatable, Please choose another one.")
+                    return;
                 }
 
                 fileData.value = {
@@ -69,11 +74,14 @@
         attachedFiles.value.forEach(file => {
             console.log('Processing file:', file.name)        
             if (file) {
-                    if (file.size > 25 * 1024 * 1024) {
+                if (file.size > 25 * 1024 * 1024) {
                     alert("File size have to less than 25MB")
                     return
                 }
-
+                if (!allowedTypes.includes(file.type)) {
+                    alert("The file format is not compatable, Please choose another one.")
+                    return;
+                }
                 fileData.value = {
                     name: file.name,
                     size: file.size,
