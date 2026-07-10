@@ -1,5 +1,6 @@
 <script setup lang="ts">
     import { ref } from 'vue'
+    import FileCard from './FileCard.vue'
 
     interface Attachment {
         id:number
@@ -55,7 +56,7 @@
         if (!files || files.length === 0) return
         Array.from(files).forEach(file => {
             // اعتبارسنجی
-            if (file.size > 25 * 1024 * 1024) return alert(`${file.name} is bigger than 25MB`)
+            if (file.size > 100 * 1024 * 1024) return alert(`${file.name} is bigger than 100MB`)
             if (!allowedTypes.includes(file.type)) return alert(`${file.type} is not acceptable format!`)
 
             // اضافه کردن به لیست
@@ -71,43 +72,37 @@
     const removeFile = (index: number) => {
         attachmentList.value.splice(index, 1)
     }
+    const handleRemoveFile = (id: number) => {
+        attachmentList.value = attachmentList.value.filter(item => item.id !== id)
+    }
 </script>
 
 <template>
-  <div 
-    @click="triggerUpload"
-    @dragover="handleDragOver"
-    @dragleave="handleDragLeave"
-    @drop="handleDrop"
-    :class="[
-      'cursor-pointer max-w-96 p-6 flex flex-col justify-center items-center border-2 border-dashed rounded-2xl shadow-2xl transition-all duration-200',
-      isDragging ? 'border-green-500 bg-[#b7b7b7]' : 'border-gray-500 bg-[#e3e3e3]',
-      fileData ? 'hover:border-red-500' : 'hover:border-green-500 hover:bg-[#b7b7b7]' //delete selection
-    ]"
-  >
-    <img class="w-16 h-16" src="@/assets/upload.png" alt="upload icon">
-    <span class="font-bold">Click to upload</span>
-    <span class="text-sm text-gray-600">Max file size: 25MB</span>
-    
-    <input 
-      ref="fileInput" 
-      type="file" 
-      @change="handleFileChange" 
-      class="hidden"
-      multiple
+  <div class="p-8 flex flex-col items-center">
+    <!-- Dropzone Area -->
+    <div 
+      @click="triggerUpload"
+      @dragover.prevent="isDragging = true"
+      @dragleave.prevent="isDragging = false"
+      @drop.prevent="handleDrop"
+      :class="[
+        'cursor-pointer w-full max-w-md p-10 flex flex-col items-center border-2 border-dashed rounded-3xl transition-all',
+        isDragging ? 'border-blue-500 bg-blue-50 scale-[1.02]' : 'border-gray-300 bg-gray-50'
+      ]"
     >
-  </div>
-  <div 
-        v-if="attachmentList"
-        class="flex flex-col gap-2 bg-blue-100 shadow-2xl P-2 m-2 max-w-72" 
-        v-for="(attach,index) in attachmentList" 
-        :key="index"
-    >
-        <div v-if="attach" class="flex flex-row items-center p-2 gap-2 border-2 rounded-2xl">
-            <p class="text-center font-medium break-all">{{ attach.name }}</p>
-            <p class="text-sm text-gray-500">{{ (attach.size / 1024 / 1024).toFixed(2) }} MB</p>
+      <span class="text-4xl mb-4">☁️</span>
+      <p class="text-gray-600 font-medium">Drop your files here or click to browse</p>
+      <input ref="fileInput" type="file" @change="handleFileChange" class="hidden" multiple>
+    </div>
 
-            <button @click.stop="removeFile(index)" class="mt-3 px-3 py-1 bg-red-500 text-white rounded hover:bg-red-600 transition duration-200">Remove</button>
-        </div>
-    </div>   
+    <!-- List Area -->
+    <div class="w-full max-w-md mt-6 flex flex-col gap-3">
+      <FileCard 
+        v-for="item in attachmentList" 
+        :key="item.id" 
+        :attach="item"
+        @remove="handleRemoveFile"
+      />
+    </div>
+  </div>
 </template>
