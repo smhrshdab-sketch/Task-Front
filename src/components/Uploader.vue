@@ -2,6 +2,7 @@
     import { ref } from 'vue'
 
     interface Attachment {
+        id:number
         name: string
         size: number
         type: string
@@ -52,31 +53,20 @@
     }
     const processFiles = (files: FileList | null) => {
         if (!files || files.length === 0) return
-        attachedFiles.value.push(...Array.from(files))
-        attachedFiles.value.forEach(file => {
-            console.log('Processing file:', file.name)        
-            if (file) {
-                if (file.size > 25 * 1024 * 1024) {
-                    alert("File size have to less than 25MB")
-                    console.info(`File size is: ${file.size} and max is: `,25 * 1024 * 1024)
-                    return
-                }
-                if (!allowedTypes.includes(file.type)) {
-                    alert("The file format is not compatable, Please choose another one.")
-                    console.info(`File type is: ${file.type} and allowed types are: `,allowedTypes)
-                    return;
-                }
-                fileData.value = {
-                    name: file.name,
-                    size: file.size,
-                    type: file.type,
-                    content: file
-                }
-                attachmentList.value.push(fileData.value)
-                console.info('File selected:', fileData.value)
-            }
+        Array.from(files).forEach(file => {
+            // اعتبارسنجی
+            if (file.size > 25 * 1024 * 1024) return alert(`${file.name} is bigger than 25MB`)
+            if (!allowedTypes.includes(file.type)) return alert(`${file.type} is not acceptable format!`)
+
+            // اضافه کردن به لیست
+            attachmentList.value.push({
+                id: Date.now() + Math.random(),
+                name: file.name,
+                size: file.size,
+                type: file.type,
+                content: file
+            })
         })
-        console.info('Selected files:', attachmentList.value)
     }
 </script>
 
