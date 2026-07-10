@@ -32,7 +32,7 @@ const selectedAvatar = ref<File | null>(null)
 const avatarPreview = ref<string>('')
 
 const router = useRouter()
-const API_URL = 'http://localhost:8000/api'
+const API_URL = import.meta.env.VITE_API_URL
 
 // Get user ID from localStorage or user object
 const getUserId = () => {

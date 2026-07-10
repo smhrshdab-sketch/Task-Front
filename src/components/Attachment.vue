@@ -3,6 +3,7 @@
     import ProgressBar from './ProgressBar.vue';
 
     const props = defineProps<{
+        id:number
         size: number
         type:string
         title:string
@@ -38,7 +39,7 @@
                         <span class="text-gray-600 text-2xl">{{ props.title }}.{{ props.type }}</span>
                     </div>
                     <div class="">
-                        <span class="text-gray-600 text-xl" v-text="props.size"></span>
+                        <span class="text-gray-600 text-xl">{{ props.size / (1024*1024) }}MB</span>
                     </div>
                     <div class="">
                         <span class="text-gray-600 text-xl">{{ props.progress }}%</span>

@@ -84,7 +84,7 @@
         permissions_override: '{}'
     })
 
-    const API_URL = 'http://localhost:8000/api'
+    const API_URL = import.meta.env.VITE_API_URL
 
     // ===== Helper Functions =====
     const parsePermissions = (permissions: Record<string, boolean> | string): Record<string, boolean> => {

@@ -12,7 +12,7 @@ const errorMessage = ref('')
 const successMessage = ref('')
 
 const router = useRouter()
-const API_URL = 'http://localhost:8000/api'
+const API_URL = import.meta.env.VITE_API_URL
 
 const handleRegister = async () => {
   errorMessage.value = ''

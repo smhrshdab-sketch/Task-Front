@@ -18,7 +18,7 @@ const getStatusColor = (status: string) => {
 
 const getAvatarUrl = (avatarPath: string | null) => {
     if (avatarPath) {
-        return `http://localhost:8000/storage/${avatarPath}`
+        return `http://localhost:8080/storage/${avatarPath}`
     }
     return null
 }

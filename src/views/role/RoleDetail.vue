@@ -22,7 +22,7 @@
     const errorMessage = ref('')
     const viewStatus = ref<boolean>(true)
 
-    const API_URL = 'http://localhost:8000/api'
+    const API_URL = import.meta.env.VITE_API_URL
 
     // Define all entities
     const entities = [

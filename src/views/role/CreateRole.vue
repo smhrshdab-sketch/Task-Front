@@ -43,7 +43,7 @@ const actions = [
     { key: 'delete', label: 'Delete' }
 ]
 
-const API_URL = 'http://localhost:8000/api'
+const API_URL = import.meta.env.VITE_API_URL
 
 
 // Parse permissions (handle string or object)

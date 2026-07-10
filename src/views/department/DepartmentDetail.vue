@@ -25,7 +25,7 @@
     const errorMessage = ref('')
     const searchQuery = ref('')
     
-    const API_URL = 'http://localhost:8000/api'
+    const API_URL = import.meta.env.VITE_API_URL
     const filteredDepartments = computed(() => {
         if (!searchQuery.value) return departments.value
         const search = searchQuery.value.toLowerCase()

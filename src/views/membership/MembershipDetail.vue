@@ -60,7 +60,7 @@
     const errorMessage = ref('')
     const successMessage = ref('')
 
-    const API_URL = 'http://localhost:8000/api'
+    const API_URL = import.meta.env.VITE_API_URL
     const membershipId = computed(() => route.params.id)
     // ===== Helper Functions =====
     const parsePermissions = (permissions: Record<string, boolean> | string): Record<string, boolean> => {

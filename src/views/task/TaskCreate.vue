@@ -43,7 +43,7 @@
     const subDep = ref<departmentBlock[]>([])
     const result_dep = ref<departmentBlock[]>([])
 
-    const API_URL = 'http://localhost:8000/api'
+    const API_URL = import.meta.env.VITE_API_URL
 
     // Form data - plain object, not nested
     const formData = ref<TaskForm>({

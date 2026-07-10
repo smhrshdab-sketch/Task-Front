@@ -11,7 +11,7 @@
   const router = useRouter()
   const user = ref(null)
   const isLoading = ref(true)
-  const API_URL = 'http://localhost:8000/api'
+  const API_URL = import.meta.env.VITE_API_URL
   const avatare_path = 'http://localhost:8000/storage/'
   //-------------------
   const aTitle = ref<string>('attchment name')
@@ -34,7 +34,7 @@
     
     try {
       // Get user info from backend
-      const response = await axios.get('http://localhost:8000/api/me', {
+      const response = await axios.get(`${API_URL}/me`, {
         headers: {
           'Authorization': `Bearer ${token}`,
           'X-Department-Id': x_dep_id

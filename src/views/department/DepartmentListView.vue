@@ -21,7 +21,7 @@ const isLoading = ref(false)
 const errorMessage = ref('')
 const breadcrumbs = ref<Department[]>([])
 
-const API_URL = 'http://localhost:8000/api'
+const API_URL = import.meta.env.VITE_API_URL
 
 // Get parent_id from URL query parameter
 const parentId = computed(() => {

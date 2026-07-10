@@ -15,7 +15,7 @@ export function useDelete(options: DeleteOptions) {
     const error = ref<string | null>(null)
     const router = useRouter()
     
-    const API_URL = 'http://localhost:8000/api'
+    const API_URL = import.meta.env.VITE_API_URL
     
     const deleteItem = async (id: number) => {
         // Confirmation dialog

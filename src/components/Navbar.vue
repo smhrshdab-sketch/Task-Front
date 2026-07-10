@@ -18,7 +18,7 @@
     userName: '',
     userAvatar: ''
   })
-  //console.log(`logm : `,props.logo)
+  const API_URL = import.meta.env.VITE_API_URL
   const emit = defineEmits<{
     (e: 'login'): void
     (e: 'navigate', path: string): void
@@ -36,7 +36,7 @@
       const token = localStorage.getItem('access_token')
       
       if (token) {
-        await axios.post('http://localhost:8000/api/logout', {}, {
+        await axios.post(`${API_URL}/api/logout`, {}, {
           headers: { 'Authorization': `Bearer ${token}` }
         }).catch(() => {})
       }
