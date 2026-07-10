@@ -24,31 +24,8 @@
         const input = event.target as HTMLInputElement
         //const file = input.files?.[0]
         if (!input.files) return
-        //const filesArray = Array.from(input.files)
-        attachedFiles.value.push(...Array.from(input.files))
-        attachedFiles.value.forEach(file => {
-            console.log('Processing file:', file.name)        
-            if (file) {
-                if (file.size > 25 * 1024 * 1024) {
-                    alert("File size have to less than 25MB")
-                    return
-                }
-                if (!allowedTypes.includes(file.type)) {
-                    alert("The file format is not compatable, Please choose another one.")
-                    return;
-                }
-
-                fileData.value = {
-                    name: file.name,
-                    size: file.size,
-                    type: file.type,
-                    content: file
-                }
-                attachmentList.value.push(fileData.value)
-                console.info('File selected:', fileData.value)
-            }
-        })
-        console.info('Selected files:', attachmentList.value)
+        if (!input.files || input.files.length === 0) return
+        processFiles(input.files)
         input.value = ''
     }
     const handleDroppedFile = (event: Event) => {
@@ -70,16 +47,23 @@
         isDragging.value = false
     
         const files = event.dataTransfer?.files
+        if (!files || files.length === 0) return
+        processFiles(files)
+    }
+    const processFiles = (files: FileList | null) => {
+        if (!files || files.length === 0) return
         attachedFiles.value.push(...Array.from(files))
         attachedFiles.value.forEach(file => {
             console.log('Processing file:', file.name)        
             if (file) {
                 if (file.size > 25 * 1024 * 1024) {
                     alert("File size have to less than 25MB")
+                    console.info(`File size is: ${file.size} and max is: `,25 * 1024 * 1024)
                     return
                 }
                 if (!allowedTypes.includes(file.type)) {
                     alert("The file format is not compatable, Please choose another one.")
+                    console.info(`File type is: ${file.type} and allowed types are: `,allowedTypes)
                     return;
                 }
                 fileData.value = {
