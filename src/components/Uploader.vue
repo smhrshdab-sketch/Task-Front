@@ -13,7 +13,7 @@
     const attachmentList = ref<Attachment[]>([])
     const attachedFiles = ref<File[]>([]) 
     const isDragging = ref<boolean>(false)
-    const allowedTypes = ['image/jpeg', 'image/png', 'application/pdf', 'application/zip'];
+    const allowedTypes = ['image/jpeg', 'image/png', 'application/pdf', 'application/zip','text/plain','audio/mpeg','video/mp4'];
 
     const triggerUpload = () => {
         console.log(fileInput.value)
