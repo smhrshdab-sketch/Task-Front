@@ -5,12 +5,19 @@
   import Navbar from '../components/Navbar.vue'
   import logoImage from '@/assets/logo.png'
   import axios from 'axios'
+  import Uploader from '@/components/Uploader.vue'
+  import Attachment from '@/components/Attachment.vue'
 
   const router = useRouter()
   const user = ref(null)
   const isLoading = ref(true)
   const API_URL = 'http://localhost:8000/api'
   const avatare_path = 'http://localhost:8000/storage/'
+  //-------------------
+  const aTitle = ref<string>('attchment name')
+  const aSatus= ref<string>('uploading')
+    const aType = ref<string>('pdf')
+  //-------------------
 
   // Check if user is logged in
   onMounted(async () => {
@@ -100,5 +107,16 @@
         </p>
       </div>
     </div>
+    <!-- <ProgressBar :progress=41></ProgressBar> -->
+    <Attachment 
+      class="w-1/2 mb-3"
+      :progress=64 
+      :status=aSatus
+      :size=315 
+      :title=aTitle
+      :type=aType
+    >
+    </Attachment>
+    <Uploader class="m-3"></Uploader>
   </div>
 </template>

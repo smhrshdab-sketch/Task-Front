@@ -68,6 +68,9 @@
             })
         })
     }
+    const removeFile = (index: number) => {
+        attachmentList.value.splice(index, 1)
+    }
 </script>
 
 <template>
@@ -104,7 +107,7 @@
             <p class="text-center font-medium break-all">{{ attach.name }}</p>
             <p class="text-sm text-gray-500">{{ (attach.size / 1024 / 1024).toFixed(2) }} MB</p>
 
-            <button @click.stop="attach = null" class="mt-3 px-3 py-1 bg-red-500 text-white rounded hover:bg-red-600 transition duration-200">Remove</button>
+            <button @click.stop="removeFile(index)" class="mt-3 px-3 py-1 bg-red-500 text-white rounded hover:bg-red-600 transition duration-200">Remove</button>
         </div>
     </div>   
 </template>
