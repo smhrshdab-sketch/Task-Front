@@ -10,7 +10,7 @@
   const user = ref(null)
   const isLoading = ref(true)
   const API_URL = import.meta.env.VITE_API_URL
-  const avatare_path = 'http://localhost:8000/storage/'
+  const avatare_path = import.meta.env.VITE_URL
   //-------------------
   const aTitle = ref<string>('attchment name')
   const aSatus= ref<string>('uploading')
@@ -56,8 +56,9 @@
     if (!user.value?.avatar_path) {
       return null
     }
+    console.log(`server avatar path: `,user.value.avatar_path)
     // The storage link makes files available at /storage/ path
-    return `http://localhost:8000/storage/${user.value.avatar_path}`
+    return `${avatare_path}${user.value.avatar_path}`
   })
 
   // Navigation handler
