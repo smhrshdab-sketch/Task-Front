@@ -56,7 +56,7 @@
         if (!files || files.length === 0) return
         Array.from(files).forEach(file => {
             // اعتبارسنجی
-            if (file.size > 100 * 1024 * 1024) return alert(`${file.name} is bigger than 100MB`)
+            if (file.size > 200 * 1024 * 1024) return alert(`${file.name} is bigger than 200MB`)
             if (!allowedTypes.includes(file.type)) return alert(`${file.type} is not acceptable format!`)
 
             // اضافه کردن به لیست
