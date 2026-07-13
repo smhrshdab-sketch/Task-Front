@@ -6,6 +6,8 @@ interface Attachment {
     size: number
     type: string
     content: File
+    progress: number  
+    status: 'uploading' | 'completed' | 'error'
 }
 
 // تعریف Props
@@ -56,5 +58,21 @@ const formatSize = (bytes: number) => {
     >
       <span class="text-xl">&times;</span>
     </button>
+     <!-- نوار پیشرفت (Progress Bar) -->
+     <div class="mt-3 w-full bg-gray-100 rounded-full h-1.5 overflow-hidden">
+      <div 
+        class="h-full transition-all duration-300 ease-out"
+        :class="[
+            attach.status === 'completed' ? 'bg-green-500' : 'bg-blue-500',
+            attach.status === 'error' ? 'bg-red-500' : ''
+        ]"
+        :style="{ width: attach.progress + '%' }"
+      ></div>
+    </div>
+    
+    <div class="flex justify-between mt-1">
+        <span class="text-[10px] text-gray-400 uppercase">{{ attach.status }}</span>
+        <span class="text-[10px] font-bold text-gray-600">{{ attach.progress }}%</span>
+    </div>
   </div>
 </template>
