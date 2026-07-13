@@ -4,8 +4,7 @@
   import { useRouter } from 'vue-router'
   import Navbar from '../components/Navbar.vue'
   import logoImage from '@/assets/logo.png'
-  import axios from 'axios'
-  import Uploader from '@/components/Uploader.vue'
+  import axios from 'axios'  
 
   const router = useRouter()
   const user = ref(null)
@@ -105,7 +104,6 @@
           You have successfully logged in.
         </p>
       </div>
-    </div>
-    <Uploader class="m-3"></Uploader>
+    </div>    
   </div>
 </template>
