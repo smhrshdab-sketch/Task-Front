@@ -73,7 +73,9 @@
         console.log(`DEPARTMENTLIST: A department is delteted. Id: `)
         fetchDepartments()
     }
-
+    const handleCancel = () => {
+        router.push('/')
+    }
     onMounted(() => {
         fetchDepartments()
     })
@@ -87,6 +89,12 @@
                     description="Manage user departments and permissions"
                     color="rgb(58 73 149)"
                 />
+        <button 
+            @click="handleCancel"
+            class="mb-4 flex items-center gap-2 text-emerald-600 hover:text-emerald-700"
+        >
+            ← Back to Dashboard
+        </button>
         <div class="container mx-auto px-4">
             
             

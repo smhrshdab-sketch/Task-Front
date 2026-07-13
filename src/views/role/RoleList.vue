@@ -86,7 +86,9 @@ const deleteRole = async (id: number, title: string) => {
         alert(error.response?.data?.message || 'Failed to delete role')
     }
 }
-
+const handleCancel = () => {
+        router.push('/')
+    }
 onMounted(() => {
     fetchRoles()
 })
@@ -100,6 +102,12 @@ onMounted(() => {
                     description="Manage user roles and permissions"
                     color="rgb(58 73 149)"
                 />
+                <button 
+                    @click="handleCancel"
+                    class="mb-4 flex items-center gap-2 text-emerald-600 hover:text-emerald-700"
+                >
+                    ← Back to Dashboard
+                </button>
         <div class="container mx-auto px-4">
             
             

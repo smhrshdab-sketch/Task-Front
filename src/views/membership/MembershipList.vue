@@ -121,7 +121,9 @@ const goToDetail = (id: number) => {
 const goToCreate = () => {
     router.push('/membership/create')
 }
-
+const handleCancel = () => {
+        router.push('/')
+    }
 onMounted(() => {
     fetchMemberships()
 })
@@ -134,6 +136,12 @@ onMounted(() => {
                     description="Manage user memberships and permissions"
                     color="rgb(158 73 149)"
                 />
+                <button 
+                    @click="handleCancel"
+                    class="mb-4 flex items-center gap-2 text-emerald-600 hover:text-emerald-700"
+                >
+                    ← Back to Dashboard
+                </button>
         <div class="container mx-auto pt-3">
             <!-- Header -->
             <div class="flex justify-between items-center gap-2 mb-6">

@@ -87,7 +87,9 @@
             alert(error.response?.data?.message || 'Failed to delete task')
         }
     }
-
+    const handleCancel = () => {
+        router.push('/')
+    }
     onMounted(() => {
         fetchTasks()
     })
@@ -100,6 +102,12 @@
                     description="Manage user tasks and permissions"
                     color="rgb(58 73 149)"
                 />
+                <button 
+                    @click="handleCancel"
+                    class="mb-4 flex items-center gap-2 text-emerald-600 hover:text-emerald-700"
+                >
+                    ← Back to Dashboard
+                </button>
         <div class="container mx-auto px-4">
             
             
@@ -160,7 +168,7 @@
             </div>
         </div>
     </div>
-    <GradientRing
+    <!-- <GradientRing
         :outer-radius="80" 
         :inner-radius="60"
         :angle="153"
@@ -172,5 +180,5 @@
         :label-font-size="32"
         :sub-label-font-size="14"
     >
-    </GradientRing>
+    </GradientRing> -->
 </template>

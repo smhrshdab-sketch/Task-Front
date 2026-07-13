@@ -212,7 +212,9 @@ const handleSubmit = async () => {
         isLoading.value = false
     }
 }
-
+const handleCancel = () => {
+        router.push('/')
+    }
 // Load user data when component mounts
 onMounted(() => {
     loadUserData()
@@ -222,6 +224,12 @@ onMounted(() => {
 <template>
     <div class="min-h-screen w-full flex justify-center items-center bg-linear-to-br from-green-50 to-green-300 p-4">
         <div class="w-full max-w-2xl bg-white rounded-2xl shadow-2xl p-6 md:p-8">
+            <button 
+                @click="handleCancel"
+                class="mb-4 flex items-center gap-2 text-emerald-600 hover:text-emerald-700"
+            >
+                ← Back to Dashboard
+            </button>
             <h1 class="text-3xl font-bold text-gray-800 mb-6 text-center">Update Account</h1>
             
             <!-- Messages -->
