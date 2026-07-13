@@ -5,6 +5,7 @@
     import Multiselect from 'vue-multiselect'
     import MultipleSelect from '@/components/Select/Custom/MultipleSelect.vue'
     import axios from 'axios'
+    import Uploader from '@/components/Uploader.vue'
 
     interface TaskForm {
         department_id: string
@@ -327,15 +328,18 @@
                         </p>
                     </div>
                     <div class="flex justify-around p-1">
+                        <p>colleague</p>
                         <multiple-select
                             :original-item="colleague" v-model="formData.memberships_engaged"
                         >
                         </multiple-select>
+                        <p>sub Department</p>
                         <multiple-select
                             :original-item="subDep" v-model="formData.departments_engaged"
                         >
                         </multiple-select>
                     </div>
+                    <Uploader class="m-3"></Uploader>
                     <!-- Actions -->
                     <div class="flex gap-3 pt-4 border-t border-gray-200">
                         <button 
