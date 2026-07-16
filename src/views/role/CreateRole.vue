@@ -33,7 +33,8 @@ const entities = [
     { name: 'department', label: 'Departments', icon: '🏢' },
     { name: 'membership', label: 'Memberships', icon: '👥' },
     { name: 'role', label: 'Roles', icon: '🔑' },
-    { name: 'account', label: 'Accounts', icon: '👤' }
+    { name: 'account', label: 'Accounts', icon: '👤' },
+    { name: 'task', label: 'Tasks', icon: '👩‍🏫' }
 ]
 
 const actions = [
