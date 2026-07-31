@@ -63,7 +63,7 @@
         }
     }
     const goToTaskDetail = (id: number) => {
-    router.push(`/tasks/${id}`)
+    router.push(`/task/${id}/detail`)
 }
 
     const goToCreateTask = () => {
