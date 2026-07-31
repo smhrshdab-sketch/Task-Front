@@ -1,4 +1,3 @@
-<!-- src/views/department/DepartmentCreate.vue -->
 <script setup lang="ts">
     import { ref, computed,onMounted } from 'vue'
     import { useRoute, useRouter } from 'vue-router'
@@ -6,10 +5,10 @@
     import MultipleSelect from '@/components/Select/Custom/MultipleSelect.vue'
     import axios from 'axios'
     import Uploader from '@/components/Uploader.vue'
+    import api from '@/services/api.js'
 
     interface TaskForm {
         department_id: string
-        assignee_id:string
         parent_id: number | null
         title: string
         description: string        
@@ -19,6 +18,7 @@
         deadline:string
         memberships_engaged: Array<number>
         departments_engaged: Array<number>
+        attachments: Array<File>
 
     }
     interface member{
@@ -43,22 +43,23 @@
 
     const subDep = ref<departmentBlock[]>([])
     const result_dep = ref<departmentBlock[]>([])
+    const pendingFiles = ref<File[]>([]);
 
     const API_URL = import.meta.env.VITE_API_URL
 
     // Form data - plain object, not nested
     const formData = ref<TaskForm>({
         department_id: '',
-        assignee_id:'',
         parent_id: null,
         title: '',
         description: '',        
         path: 0,     
-        status:'',
-        priority:'',
+        status:'preparation',
+        priority:'medium',
         deadline:'',
         memberships_engaged: [],
-        departments_engaged: []
+        departments_engaged: [],
+        attachments:[]
     })
 
     // Get parent_id from URL query parameter
@@ -78,26 +79,8 @@
         errorMessage.value = ''
         
         try {
-            const token = localStorage.getItem('access_token')
-            if (!token) {
-                router.push('/login')
-                return
-            }
-            
-            const x_dep_id = localStorage.getItem('X-Department-Id')
-            if (!x_dep_id) {
-                console.warn('X-Department-Id not set')
-            }
-            console.info(`X-Department-Id: `,x_dep_id)
-            const response = await axios.get(`${API_URL}/department/memberships`, {
-                headers: {
-                    'Authorization': `Bearer ${token}`,
-                    'Content-Type': 'application/json',
-                    'X-Department-Id': x_dep_id || '1'
-                }
-            })
-            
-            // The response is { success: true, data: [...], count: ... }
+            const response = await api.get(`department/memberships`);
+
             colleague.value = response.data.data || []
             console.info(`Colleague loaded: ${colleague.value.length}`, colleague.value)
             
@@ -113,27 +96,14 @@
     const fetchSubDepartments = async () => {
         errorMessage.value = ''
         
-        try {
-            const token = localStorage.getItem('access_token')
-            if (!token) {
-                router.push('/login')
-                return
-            }
-            
+        try {           
             const x_dep_id = localStorage.getItem('X-Department-Id')
             if (!x_dep_id) {
                 console.warn('X-Department-Id not set')
             }
             console.info(`X-Department-Id: `,x_dep_id)
-            const response = await axios.get(`${API_URL}/sub/department/${'X-Department-Id'}`, {
-                headers: {
-                    'Authorization': `Bearer ${token}`,
-                    'Content-Type': 'application/json',
-                    'X-Department-Id': x_dep_id || '1'
-                }
-            })
-            
-            // The response is { success: true, data: [...], count: ... }
+            const response = await api.get(`/sub/department/${x_dep_id}`);
+
             subDep.value = response.data.data || []
             console.info(`subDep loaded: ${subDep.value.length}`, subDep.value)
             
@@ -155,43 +125,52 @@
         successMessage.value = ''
         isSaving.value = true
         
-        try {
-            const token = localStorage.getItem('access_token')
-            if (!token) {
-                router.push('/login')
-                return
+    try {
+        // Create FormData instead of a plain object
+        const formDataPayload = new FormData();
+        
+        // Add all regular fields
+        formDataPayload.append('title', formData.value.title);
+        formDataPayload.append('description', formData.value.description);
+        if (formData.value.department_id) formDataPayload.append('department_id', formData.value.department_id);
+        if (formData.value.parent_id !== null) formDataPayload.append('parent_id', formData.value.parent_id);
+        formDataPayload.append('status', formData.value.status);
+        formDataPayload.append('priority', formData.value.priority);
+        formDataPayload.append('deadline', formData.value.deadline);
+        
+        // Handle memberships_engaged (assuming it's an array/object)
+        
+        //formDataPayload.append('memberships_engaged', formData.value.memberships_engaged);
+        formDataPayload.append('memberships_engaged', JSON.stringify(formData.value.memberships_engaged));
+        formDataPayload.append('departments_engaged', JSON.stringify(formData.value.departments_engaged));
+        //formDataPayload.append('departments_engaged', formData.value.departments_engaged);
+        
+        // Append each file individually
+        if (formData.value.attachments && formData.value.attachments.length > 0) {
+            for (let i = 0; i < formData.value.attachments.length; i++) {
+                formDataPayload.append(`attachments[]`, pendingFiles.value[i]);
             }
-            
-            const x_dep_id = localStorage.getItem('X-Department-Id')
-            if (!x_dep_id) {
-                console.log('Be careful: X-Department-Id is not set')
+        }
+        
+        console.log('New task info:', formDataPayload);
+
+        // The interceptor will automatically remove Content-Type header
+        // so browser will set it to multipart/form-data with boundary
+        const response = await api.post('/task', formDataPayload);
+            if(response.data.success){
+                successMessage.value = response.data.message 
+                console.log(`message from create task: `,response.data.message)  
+                console.log(`1)data from create task: `,response.data)                 
+                if (pendingFiles.value.length > 0) {
+                    console.log(`final pendingFiles: `,pendingFiles.value) 
+                    console.log(`Created Task Id: `,response.data.data.id) 
+                    //await uploadAttachmentsToTask(response.data.data.id, pendingFiles.value);
+                    formData.value.attachments = [];
+                }             
+            }            
+            else{
+                console.log(`!! response for create task: `,response.data)
             }
-            
-            // ✅ FIXED: Use formData.value, not formData
-            const payload = {
-                title: formData.value.title,
-                description: formData.value.description,
-                department_id: formData.value.department_id,
-                path: formData.value.path,
-                parent_id: parentId.value,
-                status: 'preparation',
-                priority: formData.value.priority,
-                deadline: formData.value.deadline,
-                memberships_engaged: formData.value.memberships_engaged,
-                departments_engaged: formData.value.departments_engaged
-            }
-            
-            console.log('New task info:', payload)
-            
-            const response = await axios.post(`${API_URL}/task`, payload, {
-                headers: {
-                    'Authorization': `Bearer ${token}`,
-                    'Content-Type': 'application/json',
-                    'X-Department-Id': x_dep_id
-                }
-            })
-            
-            successMessage.value = 'Task created successfully!'
             
             // Redirect after 1.5 seconds
             setTimeout(() => {
@@ -205,15 +184,7 @@
             
         } catch (error: any) {
             console.error('Failed to save task:', error)
-            
-            if (error.response?.data?.errors) {
-                const errors = error.response.data.errors
-                errorMessage.value = Object.values(errors).flat().join(', ')
-            } else if (error.response?.data?.message) {
-                errorMessage.value = error.response.data.message
-            } else {
-                errorMessage.value = 'Failed to save department. Please try again.'
-            }
+            console.error(error.response.data.errors)
         } finally {
             isSaving.value = false
         }
@@ -221,12 +192,36 @@
 
     const handleCancel = () => {
         if(parentId.value){
-            router.push(`/department/${parentId.value}`)
+            router.push(`/task/${parentId.value}`)
         }
         else{
-            router.push('/department')
+            router.push('/tasks')
         }
     }
+    const handleFilesUploaded = (files: File[]) => {
+        console.log("Files received from uploader, waiting for task creation...");
+        pendingFiles.value = files; 
+        formData.value.attachments = files
+        console.log(`(emit)UploadedFiles[formData.value.attachments]: `,formData.value.attachments)
+        console.log(`(emit)UploadedFiles[pendingFiles.value]: `,pendingFiles.value)
+    };
+    const uploadAttachmentsToTask = async (taskId: number, files: File[]) => {
+        console.log(`uploadAttachmentsToTask: ${files.length} files`);
+        console.log(`taskId: `,taskId)
+        
+        for (const file of files) {
+            const formData = new FormData();
+            formData.append('attachment', file); // ✅ Field name must match backend
+            formData.append('is_public', 'true'); // ✅ Optional field
+            
+            try {
+                const response = await api.post(`/tasks/${taskId}/attachments`, formData);
+                console.log('Uploaded:', file.name, response.data);
+            } catch (error) {
+                console.error('Failed to upload:', file.name, error);
+            }
+        }
+    };
     onMounted(() => {
         fetchColleagues()
         fetchSubDepartments()
@@ -339,7 +334,11 @@
                         >
                         </multiple-select>
                     </div>
-                    <Uploader class="m-3"></Uploader>
+                    <Uploader
+                     class="m-3"
+                     @files="handleFilesUploaded"
+                    >
+                    </Uploader>
                     <!-- Actions -->
                     <div class="flex gap-3 pt-4 border-t border-gray-200">
                         <button 
