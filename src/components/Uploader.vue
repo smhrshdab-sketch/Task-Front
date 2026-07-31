@@ -1,5 +1,5 @@
 <script setup lang="ts">
-    import { ref } from 'vue'
+    import { ref, watch } from 'vue'
     import FileCard from './FileCard.vue'
 
     interface Attachment {
@@ -16,6 +16,15 @@
     const attachedFiles = ref<File[]>([]) 
     const isDragging = ref<boolean>(false)
     const allowedTypes = ['image/jpeg', 'image/png', 'application/pdf', 'application/zip','text/plain','audio/mpeg','video/mp4'];
+    //=========================
+    const emit = defineEmits<{
+        (e: 'files',item:File[]): void
+    }>()
+    watch(attachedFiles, (newVal) => {
+          emit('files', [...newVal]);
+      }, 
+      { deep: true }
+    );
 
     const triggerUpload = () => {
         console.log(fileInput.value)
@@ -67,6 +76,8 @@
                 type: file.type,
                 content: file
             })
+            attachedFiles.value.push(file)
+            console.log(`attachedFiles in uploader: `,attachedFiles.value)
         })
     }
     const removeFile = (index: number) => {
