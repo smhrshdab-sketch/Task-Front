@@ -116,6 +116,7 @@
   <div class="p-8 flex flex-col items-center">
     <!-- Dropzone Area -->
     <div 
+      v-if="!readonly"
       @click="triggerUpload"
       @dragover.prevent="isDragging = true"
       @dragleave.prevent="isDragging = false"
