@@ -65,7 +65,7 @@ const formatSize = (bytes: number) => {
       <span class="text-xl">&times;</span>
     </button>
      <!-- نوار پیشرفت (Progress Bar) -->
-     <div class="mt-3 w-full bg-gray-100 rounded-full h-1.5 overflow-hidden">
+     <div v-if="!attach.isPersisted" class="mt-3 w-full bg-gray-100 rounded-full h-1.5 overflow-hidden">
       <div 
         class="h-full transition-all duration-300 ease-out"
         :class="[
