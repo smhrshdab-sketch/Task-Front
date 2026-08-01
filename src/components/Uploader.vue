@@ -22,15 +22,15 @@
         }
     });
     const fileInput = ref<HTMLInputElement | null>(null) 
-    const fileData = ref<Attachment | null>(null)
     const attachmentList = ref<Attachment[]>([])
     const attachedFiles = ref<File[]>([]) 
+    const deletedFiles = ref<number[]>([])
     const isDragging = ref<boolean>(false)
     const allowedTypes = ['image/jpeg', 'image/png', 'application/pdf', 'application/zip','text/plain','audio/mpeg','video/mp4'];
     //=========================
     const emit = defineEmits<{
         (e: 'files',item:File[]): void
-        (e:'deletePersisted',item:number): void
+        (e:'deletePersisted',item:Number[]): void
     }>()
     //=========================
     watch(attachedFiles, (newVal) => {
@@ -99,15 +99,20 @@
             console.log(`attachedFiles in uploader: `,attachedFiles.value)
         })
     }
-    const removeFile = (index: number) => {
-        attachmentList.value.splice(index, 1)
-    }
+    // const removeFile = (index: number) => {
+    //     attachmentList.value.splice(index, 1)
+    // }
     const handleRemoveFile = (id: number) => {
       if (props.readonly) return;
       const isPersisted = attachmentList.value.find(item => item.id == id)?.isPersisted
         attachmentList.value = attachmentList.value.filter(item => item.id !== id)
         if (isPersisted) {
-            emit('deletePersisted',id);
+            deletedFiles.value.push(id)
+            emit('deletePersisted',deletedFiles)
+            console.log(`an existance file with ${id} is removed`)
+        }
+        else{
+          console.log(`a temporary file with ${id} is removed`)
         }
     }
 </script>
