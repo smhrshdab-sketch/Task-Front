@@ -65,6 +65,7 @@ const formatSize = (bytes: number) => {
       <span class="text-xl">&times;</span>
     </button>
      <!-- نوار پیشرفت (Progress Bar) -->
+      <!-- <div v-if="!attach.isPersisted && attach.status == 'uploading'" class="mt-3 w-full bg-gray-100 rounded-full h-1.5 overflow-hidden"> -->
      <div v-if="!attach.isPersisted" class="mt-3 w-full bg-gray-100 rounded-full h-1.5 overflow-hidden">
       <div 
         class="h-full transition-all duration-300 ease-out"
@@ -75,7 +76,11 @@ const formatSize = (bytes: number) => {
         :style="{ width: attach.progress + '%' }"
       ></div>
     </div>
-    
+    <a v-if="attach.url" :href="attach.url" target="_blank">
+      <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="size-6 hover:size-7 hover:text-green-500 hover:cursor-pointer">
+          <path stroke-linecap="round" stroke-linejoin="round" d="M12 9.75v6.75m0 0-3-3m3 3 3-3m-8.25 6a4.5 4.5 0 0 1-1.41-8.775 5.25 5.25 0 0 1 10.233-2.33 3 3 0 0 1 3.758 3.848A3.752 3.752 0 0 1 18 19.5H6.75Z" />
+      </svg>
+    </a>
     <div class="flex justify-between mt-1">
         <span class="text-[10px] text-gray-400 uppercase">{{ attach.status }}</span>
         <span class="text-[10px] font-bold text-gray-600">{{ attach.progress }}%</span>
