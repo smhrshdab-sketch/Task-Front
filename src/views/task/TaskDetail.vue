@@ -4,6 +4,7 @@
     import Accordion from '@/components/Accordion.vue'
     import axios from 'axios'
     import api from '@/services/api.js';
+    import Uploader from '@/components/Uploader.vue';
     //=======================
     interface TaskDetail {
         department_id: string
@@ -76,6 +77,8 @@
     const successMessage = ref('')
     const taskInfo = ref<TaskDetail>()
     const attachmentList = ref<Attachment[]>([])
+    const pendingFiles = ref<File[]>([]);
+    const deletedFiles = ref<number[]>([]);
     const partnames = ['description','engaged','departments','attachments','links']        
     const flag = ref('')
     //=========================
@@ -127,6 +130,16 @@
         } finally {
             //
         }
+    }
+    const handleFilesUploaded = (files: File[]) => {
+        console.log("Files received from uploader, waiting for submit...");
+        pendingFiles.value = files; 
+        console.log(`(emit)UploadedFiles[pendingFiles.value]: `,pendingFiles.value)
+    }
+    const handleFileToDelete = (ids:number[]) => {
+        console.log("Deleted Ids received from uploader, waiting for submit...");
+        deletedFiles.value = ids; 
+        console.log(`(emit)DeletedFiles[deletedFiles.value]: `,deletedFiles.value)
     }
     const menuClicked = (item:string) => {
         console.log(`${item} is clicked`)
@@ -275,6 +288,14 @@
                     </div>
                     <div v-else-if="flag == 'attachments'">
                         <p>Attachments is clicked</p>
+                        <Uploader
+                            class="m-3"
+                            :prviousFiles="attachmentList"
+                            @files="handleFilesUploaded"
+                            @deletePersisted="handleFileToDelete"
+                        >
+                            <!--  -->
+                        </Uploader>
                     </div>
                     <div v-else-if="flag == 'links'">
                         <p>Links is clicked</p>
