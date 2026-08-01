@@ -5,7 +5,9 @@ interface Attachment {
     name: string
     size: number
     type: string
-    content: File
+    content: File | null  
+    isPersisted: boolean 
+    url: string | null
     progress: number  
     status: 'uploading' | 'completed' | 'error'
 }
@@ -13,6 +15,10 @@ interface Attachment {
 // تعریف Props
 const props = defineProps<{
     attach: Attachment
+    readonly: { 
+        type: Boolean,
+        default: false
+    }
 }>()
 
 // تعریف Emits برای ارسال پیام به پدر
