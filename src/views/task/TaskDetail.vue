@@ -45,16 +45,38 @@ import Attachment from '@/Components/Shared/modals/AttachmentsModal/Attachment.v
             updated_at: string
         }
         attachment:{
-            original_name:string
-            mime_type:string
-            size:number
+            attachable_id:number,
+            attachable_type:string,
+            created_at:string,
+            deleted_at:string,
+            description:string,
+            disk:string,
+            file_name:string,
+            file_path:string,
+            id:number,
+            is_public:boolean,
+            mime_type:string,
+            original_name:string,
+            size:number,
+            updated_at:string,
+            uploaded_by:number
         }
+    }
+    interface Attachment {
+        id:number
+        name: string
+        size: number
+        type: string
+        content: File | null     
+        isPersisted: boolean 
+        url: string | null
     }
     const route = useRoute()
     const router = useRouter()
     const errorMessage = ref('')
     const successMessage = ref('')
     const taskInfo = ref<TaskDetail>()
+    const attachmentList = ref<Attachment[]>([])
     const partnames = ['description','engaged','departments','attachments','links']        
     const flag = ref('')
     //=========================
