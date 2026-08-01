@@ -30,6 +30,7 @@
     //=========================
     const emit = defineEmits<{
         (e: 'files',item:File[]): void
+        (e:'deletePersisted',item:File): void
     }>()
     watch(attachedFiles, (newVal) => {
           emit('files', [...newVal]);
@@ -81,7 +82,7 @@
 
             // اضافه کردن به لیست
             attachmentList.value.push({
-                id: Date.now() + Math.random(),
+                id: Date.now() + Math.random(),//or id: undefined,
                 name: file.name,
                 size: file.size,
                 type: file.type,
