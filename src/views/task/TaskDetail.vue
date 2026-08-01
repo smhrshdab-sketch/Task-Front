@@ -4,7 +4,6 @@
     import Accordion from '@/components/Accordion.vue'
     import axios from 'axios'
     import api from '@/services/api.js';
-import Attachment from '@/Components/Shared/modals/AttachmentsModal/Attachment.vue';
     //=======================
     interface TaskDetail {
         department_id: string
@@ -44,7 +43,7 @@ import Attachment from '@/Components/Shared/modals/AttachmentsModal/Attachment.v
             created_at: string
             updated_at: string
         }
-        attachment:{
+        attachments:{
             attachable_id:number,
             attachable_type:string,
             created_at:string,
@@ -90,6 +89,19 @@ import Attachment from '@/Components/Shared/modals/AttachmentsModal/Attachment.v
 
             taskInfo.value = response.data.data || []
             console.info(`taskInfo loaded: ${taskInfo.value.length}`, taskInfo.value)
+            if(taskInfo.value?.attachments){
+                taskInfo.value?.attachments.forEach(element => {
+                    attachmentList.value.push({
+                        id: element.id,
+                        name: element.original_name,
+                        size: element.size,
+                        type: element.mime_type,
+                        content: null,
+                        isPersisted:true,
+                        url:`${import.meta.env.VITE_URL}app/public/${element.file_path}`
+                    })
+                });
+            }
             
         } catch (error: any) {
             console.error('Failed to load taskInfo:', error)
