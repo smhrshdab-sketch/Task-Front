@@ -30,7 +30,7 @@
     //=========================
     const emit = defineEmits<{
         (e: 'files',item:File[]): void
-        (e:'deletePersisted',item:File): void
+        (e:'deletePersisted',item:number): void
     }>()
     watch(attachedFiles, (newVal) => {
           emit('files', [...newVal]);
@@ -99,7 +99,11 @@
     }
     const handleRemoveFile = (id: number) => {
       if (props.readonly) return;
+      const isPersisted = attachmentList.value.find(item => item.id == id)?.isPersisted
         attachmentList.value = attachmentList.value.filter(item => item.id !== id)
+        if (isPersisted) {
+            emit('deletePersisted',id);
+        }
     }
 </script>
 
