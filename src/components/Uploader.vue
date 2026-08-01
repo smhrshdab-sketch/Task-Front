@@ -7,7 +7,9 @@
         name: string
         size: number
         type: string
-        content: File
+        content: File | null     
+        isPersisted: boolean 
+        url: string | null
     }
 
     const fileInput = ref<HTMLInputElement | null>(null) 
@@ -74,7 +76,9 @@
                 name: file.name,
                 size: file.size,
                 type: file.type,
-                content: file
+                content: file,
+                isPersisted:false,
+                url:null
             })
             attachedFiles.value.push(file)
             console.log(`attachedFiles in uploader: `,attachedFiles.value)
