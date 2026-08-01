@@ -97,6 +97,7 @@
         attachmentList.value.splice(index, 1)
     }
     const handleRemoveFile = (id: number) => {
+      if (props.readonly) return;
         attachmentList.value = attachmentList.value.filter(item => item.id !== id)
     }
 </script>
