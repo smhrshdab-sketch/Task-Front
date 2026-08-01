@@ -11,7 +11,16 @@
         isPersisted: boolean 
         url: string | null
     }
-
+    const props = defineProps({
+        prviousFiles: {
+            type: Array as () => Attachment[],
+            default: () => []
+        },
+        readonly: { 
+            type: Boolean,
+            default: false
+        }
+    });
     const fileInput = ref<HTMLInputElement | null>(null) 
     const fileData = ref<Attachment | null>(null)
     const attachmentList = ref<Attachment[]>([])
@@ -19,6 +28,8 @@
     const isDragging = ref<boolean>(false)
     const allowedTypes = ['image/jpeg', 'image/png', 'application/pdf', 'application/zip','text/plain','audio/mpeg','video/mp4'];
     //=========================
+    attachmentList.value = props.prviousFiles.map(file => ({ ...file }));
+
     const emit = defineEmits<{
         (e: 'files',item:File[]): void
     }>()
