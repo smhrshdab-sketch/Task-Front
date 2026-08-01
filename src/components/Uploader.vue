@@ -28,8 +28,6 @@
     const isDragging = ref<boolean>(false)
     const allowedTypes = ['image/jpeg', 'image/png', 'application/pdf', 'application/zip','text/plain','audio/mpeg','video/mp4'];
     //=========================
-    attachmentList.value = props.prviousFiles.map(file => ({ ...file }));
-
     const emit = defineEmits<{
         (e: 'files',item:File[]): void
     }>()
@@ -38,7 +36,7 @@
       }, 
       { deep: true }
     );
-
+    attachmentList.value = props.prviousFiles.map(file => ({ ...file }));
     const triggerUpload = () => {
         console.log(fileInput.value)
         fileInput.value?.click()
