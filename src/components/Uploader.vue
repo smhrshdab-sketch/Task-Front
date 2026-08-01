@@ -32,11 +32,16 @@
         (e: 'files',item:File[]): void
         (e:'deletePersisted',item:number): void
     }>()
+    //=========================
     watch(attachedFiles, (newVal) => {
           emit('files', [...newVal]);
       }, 
       { deep: true }
     );
+    watch(() => props.prviousFiles, (newVal) => {
+      attachmentList.value = newVal.map(file => ({ ...file }));
+    }, { deep: true });
+    //========================
     attachmentList.value = props.prviousFiles.map(file => ({ ...file }));
     const triggerUpload = () => {
         console.log(fileInput.value)
