@@ -136,23 +136,6 @@ import { ClockIcon } from '@heroicons/vue/24/solid/index.js';
             //isLoading.value = false
         }
     }
-    const fetchEngages = async () =>{
-        errorMessage.value = ''
-        
-        try {
-            const response = await api.get(`task/${taskId.value}/memberships`);
-
-            taskInfo.value = response.data.data || []
-            console.info(`taskInfo loaded: ${taskInfo.value.length}`, taskInfo.value)
-            
-        } catch (error: any) {
-            console.error('Failed to load taskInfo:', error)
-            errorMessage.value = error.response?.data?.message || 'Failed to load taskInfo'
-            taskInfo.value = []
-        } finally {
-            //
-        }
-    }
     const menuClicked = (item:string) => {
         console.log(`${item} is clicked`)
         flag.value = item
@@ -167,7 +150,6 @@ import { ClockIcon } from '@heroicons/vue/24/solid/index.js';
     }
     onMounted(() => {
         fetchTask()
-        fetchEngages()
     })
 </script>
 <template>
