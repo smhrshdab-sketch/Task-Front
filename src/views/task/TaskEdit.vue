@@ -205,6 +205,7 @@ import { v4 as uuid } from 'uuid';
             }
             if(taskInfo.value?.contributors){
                 originalEngaged.value = taskInfo.value.contributors.map(c => c.contributor)
+                finalEngage.value = [...originalEngaged.value]
                 console.info(`4)originalEngaged: `, originalEngaged.value)
 
             }
@@ -395,26 +396,11 @@ import { v4 as uuid } from 'uuid';
                 memberships_engaged: toRaw(finalEngage.value)
             }
             console.log(`payload: `,payload.memberships_engaged)
-            const response = await api.put(`/task/${taskId.value}`, payload)           
-            if(response.data.success){
+            const response = await api.put(`/task/${taskId.value}/engage`, payload)           
+            if(response){
                 successMessage.value = response.data.message 
-                console.log(`message from create task: `,response.data.message)  
-                console.log(`1)data from create task: `,response.data)
                 fetchColleagues() 
-            }            
-            else{
-                console.log(`!! response for create task: `,response.data)
-            }
-            
-            // Redirect after 1.5 seconds
-            // setTimeout(() => {
-            //     if(parentId.value){
-            //         router.push(`/task/${parentId.value}`)
-            //     }
-            //     else{
-            //         router.push('/tasks')
-            //     }
-            // }, 1500)
+            }  
         }catch (error: any) {
             console.error('Failed to save task:', error)
             console.error(error.response.data.errors)
@@ -424,6 +410,21 @@ import { v4 as uuid } from 'uuid';
     }
     const removeEngaged = async () => {
         lastEngaged()
+        try {
+            // Create FormData instead of a plain object task/{task}/engage
+            const payload = {
+                memberships_engaged: toRaw(finalEngage.value)
+            }
+            console.log(`payload: `,payload.memberships_engaged)
+            const response = await api.put(`/task/${taskId.value}/engage`, payload)           
+            if(response){
+                successMessage.value = response.data.message 
+                fetchColleagues() 
+            }  
+        }catch (error: any) {
+            console.error('Failed to save task:', error)
+            console.error(error.response.data.errors)
+        } 
         console.log(`final engaged is: `,finalEngage.value)
         deleteEngagedSelectedClear()
     }
