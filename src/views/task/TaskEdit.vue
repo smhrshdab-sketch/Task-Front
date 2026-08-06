@@ -348,7 +348,6 @@ import { v4 as uuid } from 'uuid';
             console.log(`Now engageDeleteSelect.value is: `,engageDeleteSelect.value)
         }
     }
-    //----------------
     const addEngageSelectorToggle = (id:number) => {
         console.log(`addEngageSelectorToggle reached`)
         const isExist_temp = engageAddSelect.value.find(item => item == id)
@@ -437,6 +436,12 @@ import { v4 as uuid } from 'uuid';
 <template>
     <div class="bg-[#994] w-full flex flex-col gap-1 justify-center p-3">
         <div class="w-full p-2 justify-center">
+            <button 
+                    @click="back"
+                    class="mb-4 flex items-center gap-2 text-emerald-600 hover:text-emerald-700"
+                >
+                    ← Back
+                </button>
             <div class="w-full flex flex-col gap-1">
                 <div class="p-2">
                     <span class="text-2xl font-bold">{{ taskInfo?.title }}</span>
