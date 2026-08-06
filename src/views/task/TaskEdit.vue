@@ -225,24 +225,7 @@ import { v4 as uuid } from 'uuid';
         } finally {
             //isLoading.value = false
         }
-    }
-    const fetchEngages = async () =>{
-        errorMessage.value = ''
-        
-        try {
-            const response = await api.get(`task/${taskId.value}/memberships`);
-
-            taskInfo.value = response.data.data || []
-            console.info(`taskInfo loaded: ${taskInfo.value.length}`, taskInfo.value)
-            
-        } catch (error: any) {
-            console.error('Failed to load taskInfo:', error)
-            errorMessage.value = error.response?.data?.message || 'Failed to load taskInfo'
-            taskInfo.value = []
-        } finally {
-            //
-        }
-    }
+    }    
     const fetchColleagues = async () => {
         //isLoading.value = true
         errorMessage.value = ''
@@ -330,10 +313,7 @@ import { v4 as uuid } from 'uuid';
     const menuClicked = (item:string) => {
         console.log(`${item} is clicked`)
         flag.value = item
-    }
-    const back = () => {
-        router.push(`/task/${taskId.value}/detail`)
-    }
+    }    
     const deleteEngageSelectorToggle = (id:number) => {
         console.log(`deleteEngageSelectorToggle reached`)
         const isExist = engageDeleteSelect.value.find(item => item == id)
@@ -427,9 +407,11 @@ import { v4 as uuid } from 'uuid';
         console.log(`final engaged is: `,finalEngage.value)
         deleteEngagedSelectedClear()
     }
+    const back = () => {
+        router.push(`/task/${taskId.value}/detail`)
+    }
     onMounted(() => {
         fetchTask()
-        fetchEngages()
         fetchColleagues()
     })
 </script>
@@ -458,107 +440,107 @@ import { v4 as uuid } from 'uuid';
                 <div class="p-2 bg-green-100">
                     <div v-if="flag == 'description'">
                         <div class="container mx-auto px-4 max-w-3xl">
-            <!-- Header -->
-            <div class="mb-6">
-                
-                <h1 class="text-3xl font-bold text-gray-800">Update the Task</h1>
-            </div>
-            
-            <!-- Success Message -->
-            <div v-if="successMessage" class="mb-4 p-4 bg-green-100 border border-green-400 text-green-700 rounded-lg">
-                {{ successMessage }}
-            </div>
-            
-            <!-- Error Message -->
-            <div v-if="errorMessage" class="mb-4 p-4 bg-red-100 border border-red-400 text-red-700 rounded-lg">
-                {{ errorMessage }}
-            </div>
-            
-            <!-- Form -->
-            <div class="bg-white rounded-xl shadow-lg overflow-hidden">
-                <form @submit.prevent="" class="p-6 space-y-6">
-                    <!-- Title Field -->
-                    <div>
-                        <label class="block text-sm font-semibold text-gray-700 mb-2">
-                            Task Title <span class="text-red-500">*</span>
-                        </label>
-                        <input 
-                            v-model="formData.title"
-                            type="text"
-                            class="w-full p-3 text-gray-800 bg-gray-50 border border-gray-200 rounded-lg 
-                                   focus:outline-none focus:ring-2 focus:ring-emerald-500"
-                            placeholder="e.g., Engineering, Marketing, Sales"
-                            required
-                        >
-                        <p v-if="formData.title && formData.title.length < 3" class="text-red-500 text-sm mt-1">
-                            Title must be at least 3 characters
-                        </p>
-                    </div>
-                    
-                    <!-- Description Field -->
-                    <div>
-                        <label class="block text-sm font-semibold text-gray-700 mb-2">
-                            Description <span class="text-red-500">*</span>
-                        </label>
-                        <textarea 
-                            v-model="formData.description"
-                            rows="5"
-                            class="w-full p-3 text-gray-800 bg-gray-50 border border-gray-200 rounded-lg 
-                                   focus:outline-none focus:ring-2 focus:ring-emerald-500 resize-none"
-                            placeholder="Describe the task's purpose, responsibilities, and goals..."
-                            required
-                        ></textarea>
-                        <div class="flex justify-between mt-1">
-                            <p v-if="formData.description && formData.description.length < 10" class="text-red-500 text-sm">
-                                Description must be at least 10 characters
-                            </p>
-                            <p class="text-gray-400 text-sm ml-auto">
-                                {{ formData.description.length }}/500 characters
-                            </p>
+                            <!-- Header -->
+                            <div class="mb-6">
+                                
+                                <h1 class="text-3xl font-bold text-gray-800">Update the Task</h1>
+                            </div>
+                            
+                            <!-- Success Message -->
+                            <div v-if="successMessage" class="mb-4 p-4 bg-green-100 border border-green-400 text-green-700 rounded-lg">
+                                {{ successMessage }}
+                            </div>
+                            
+                            <!-- Error Message -->
+                            <div v-if="errorMessage" class="mb-4 p-4 bg-red-100 border border-red-400 text-red-700 rounded-lg">
+                                {{ errorMessage }}
+                            </div>
+                            
+                            <!-- Form -->
+                            <div class="bg-white rounded-xl shadow-lg overflow-hidden">
+                                <form @submit.prevent="" class="p-6 space-y-6">
+                                    <!-- Title Field -->
+                                    <div>
+                                        <label class="block text-sm font-semibold text-gray-700 mb-2">
+                                            Task Title <span class="text-red-500">*</span>
+                                        </label>
+                                        <input 
+                                            v-model="formData.title"
+                                            type="text"
+                                            class="w-full p-3 text-gray-800 bg-gray-50 border border-gray-200 rounded-lg 
+                                                focus:outline-none focus:ring-2 focus:ring-emerald-500"
+                                            placeholder="e.g., Engineering, Marketing, Sales"
+                                            required
+                                        >
+                                        <p v-if="formData.title && formData.title.length < 3" class="text-red-500 text-sm mt-1">
+                                            Title must be at least 3 characters
+                                        </p>
+                                    </div>
+                                    
+                                    <!-- Description Field -->
+                                    <div>
+                                        <label class="block text-sm font-semibold text-gray-700 mb-2">
+                                            Description <span class="text-red-500">*</span>
+                                        </label>
+                                        <textarea 
+                                            v-model="formData.description"
+                                            rows="5"
+                                            class="w-full p-3 text-gray-800 bg-gray-50 border border-gray-200 rounded-lg 
+                                                focus:outline-none focus:ring-2 focus:ring-emerald-500 resize-none"
+                                            placeholder="Describe the task's purpose, responsibilities, and goals..."
+                                            required
+                                        ></textarea>
+                                        <div class="flex justify-between mt-1">
+                                            <p v-if="formData.description && formData.description.length < 10" class="text-red-500 text-sm">
+                                                Description must be at least 10 characters
+                                            </p>
+                                            <p class="text-gray-400 text-sm ml-auto">
+                                                {{ formData.description.length }}/500 characters
+                                            </p>
+                                        </div>
+                                    </div>
+                                    <div>
+                                        <label class="block text-sm font-semibold text-gray-700 mb-2">
+                                            Task Date <span class="text-red-500">*</span>
+                                        </label>
+                                        <input 
+                                            v-model="formData.deadline"
+                                            type="date"
+                                            class="w-full p-3 text-gray-800 bg-gray-50 border border-gray-200 rounded-lg 
+                                                focus:outline-none focus:ring-2 focus:ring-emerald-500"
+                                            placeholder="YYYY-MM-DD HH:mm:SS"
+                                            required
+                                        >
+                                    </div>
+                                    <!-- Actions -->
+                                    <div class="flex gap-3 pt-4 border-t border-gray-200">
+                                        <button 
+                                            type="submit"
+                                            :disabled="isSaving"
+                                            class="flex-1 px-6 py-3 bg-emerald-600 text-white rounded-lg 
+                                                hover:bg-emerald-700 t cursor-pointerransition-all duration-200 
+                                                disabled:opacity-50 disabled:cursor-not-allowed font-semibold"
+                                        >
+                                            <span v-if="!isSaving || !isValidForm">Update Task</span>
+                                            <span v-else class="flex items-center justify-center gap-2">
+                                                <span class="inline-block animate-spin rounded-full h-4 w-4 border-b-2 border-white"></span>
+                                                Creating...
+                                            </span>
+                                        </button>
+                                        
+                                        <button 
+                                            type="button"
+                                            @click=""
+                                            class="px-6 py-3 bg-gray-200 text-gray-700 rounded-lg 
+                                                hover:bg-gray-300 transition-all duration-200 font-semibold"
+                                        >
+                                            Cancel
+                                        </button>
+                                    </div>
+                                </form>
+                            </div>
                         </div>
-                    </div>
-                    <div>
-                        <label class="block text-sm font-semibold text-gray-700 mb-2">
-                            Task Date <span class="text-red-500">*</span>
-                        </label>
-                        <input 
-                            v-model="formData.deadline"
-                            type="date"
-                            class="w-full p-3 text-gray-800 bg-gray-50 border border-gray-200 rounded-lg 
-                                   focus:outline-none focus:ring-2 focus:ring-emerald-500"
-                            placeholder="YYYY-MM-DD HH:mm:SS"
-                            required
-                        >
-                    </div>
-                    <!-- Actions -->
-                    <div class="flex gap-3 pt-4 border-t border-gray-200">
-                        <button 
-                            type="submit"
-                            :disabled="isSaving"
-                            class="flex-1 px-6 py-3 bg-emerald-600 text-white rounded-lg 
-                                   hover:bg-emerald-700 t cursor-pointerransition-all duration-200 
-                                   disabled:opacity-50 disabled:cursor-not-allowed font-semibold"
-                        >
-                            <span v-if="!isSaving || !isValidForm">Update Task</span>
-                            <span v-else class="flex items-center justify-center gap-2">
-                                <span class="inline-block animate-spin rounded-full h-4 w-4 border-b-2 border-white"></span>
-                                Creating...
-                            </span>
-                        </button>
-                        
-                        <button 
-                            type="button"
-                            @click=""
-                            class="px-6 py-3 bg-gray-200 text-gray-700 rounded-lg 
-                                   hover:bg-gray-300 transition-all duration-200 font-semibold"
-                        >
-                            Cancel
-                        </button>
-                    </div>
-                </form>
-            </div>
-        </div>
-        <!-- ============ -->
+                        <!-- ============ -->
                     </div>
                     <div v-else-if="flag == 'engaged'">
                         <div class="rounded border-2 p-2">
