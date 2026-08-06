@@ -533,7 +533,7 @@ import { v4 as uuid } from 'uuid';
                                    hover:bg-emerald-700 t cursor-pointerransition-all duration-200 
                                    disabled:opacity-50 disabled:cursor-not-allowed font-semibold"
                         >
-                            <span v-if="!isSaving || !isValidForm">Create Department</span>
+                            <span v-if="!isSaving || !isValidForm">Update Task</span>
                             <span v-else class="flex items-center justify-center gap-2">
                                 <span class="inline-block animate-spin rounded-full h-4 w-4 border-b-2 border-white"></span>
                                 Creating...
