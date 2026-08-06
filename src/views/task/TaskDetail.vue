@@ -5,8 +5,10 @@
     import axios from 'axios'
     import api from '@/services/api.js';
     import Uploader from '@/components/Uploader.vue';
+import { ClockIcon } from '@heroicons/vue/24/solid/index.js';
     //=======================
     interface TaskDetail {
+        id:number
         department_id: string
         parent_id: number | null
         title: string
@@ -71,6 +73,16 @@
         isPersisted: boolean 
         url: string | null
     }
+    interface AddAttachment {
+        model:string
+        record:number
+        attachments: Array<File>
+    }
+    interface RemoveAttachment {
+        model:string
+        record:number
+        ids: Array<Number>
+    }
     const route = useRoute()
     const router = useRouter()
     const errorMessage = ref('')
@@ -82,6 +94,16 @@
     const partnames = ['description','engaged','departments','attachments','links']        
     const flag = ref('')
     //=========================
+    const addData = ref<AddAttachment>({
+        model:'App\Models\Task',
+        record:0,
+        attachments:[]
+    })
+    const removeData = ref<RemoveAttachment>({
+        model:'App\Models\Task',
+        record:0,
+        ids:[]
+    })
     const taskId = computed(() => route.params.id)
     const fetchTask = async () => {
         //isLoading.value = true
@@ -131,19 +153,17 @@
             //
         }
     }
-    const handleFilesUploaded = (files: File[]) => {
-        console.log("Files received from uploader, waiting for submit...");
-        pendingFiles.value = files; 
-        console.log(`(emit)UploadedFiles[pendingFiles.value]: `,pendingFiles.value)
-    }
-    const handleFileToDelete = (ids:number[]) => {
-        console.log("Deleted Ids received from uploader, waiting for submit...");
-        deletedFiles.value = ids; 
-        console.log(`(emit)DeletedFiles[deletedFiles.value]: `,deletedFiles.value)
-    }
     const menuClicked = (item:string) => {
         console.log(`${item} is clicked`)
         flag.value = item
+    }
+    const goToEdit = () => {
+        router.push({
+            path:`/task/${taskId.value}/edit`
+        })
+    }
+    const cancel = () => {
+        router.push(`/tasks`)
     }
     onMounted(() => {
         fetchTask()
@@ -154,8 +174,20 @@
     <div class="bg-[#994] w-full flex justify-center p-3">
         <div class="w-full p-2 justify-center">
             <div class="w-full flex flex-col gap-1">
-                <div class="p-2">
+                <button 
+                    @click="cancel"
+                    class="mb-4 flex items-center gap-2 text-emerald-600 hover:text-emerald-700 transition-colors"
+                >
+                    ← Back
+                </button>
+                <div class="flex justify-between p-2">
                     <span class="text-2xl font-bold">{{ taskInfo?.title }}</span>
+                    <button
+                        @click="goToEdit"
+                        class="px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors flex items-center gap-2"
+                    >
+                        ✏️ Edit Membership
+                    </button>
                 </div>
                 <ul class="m-2 min-w-64 py-1 px-3 flex justity-around rounded bg-gray-200">
                     <li 
@@ -205,16 +237,6 @@
                                             </span>
                                         </div>
                                     </th>
-                                    <th class="px-4 py-3 text-center text-sm font-semibold text-gray-700">
-                                        <div class="flex flex-col items-center gap-1">
-                                            <span class="text-base">Action</span>
-                                            <span>
-                                                <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="size-6">
-                                                    <path stroke-linecap="round" stroke-linejoin="round" d="M11.42 15.17 17.25 21A2.652 2.652 0 0 0 21 17.25l-5.877-5.877M11.42 15.17l2.496-3.03c.317-.384.74-.626 1.208-.766M11.42 15.17l-4.655 5.653a2.548 2.548 0 1 1-3.586-3.586l6.837-5.63m5.108-.233c.55-.164 1.163-.188 1.743-.14a4.5 4.5 0 0 0 4.486-6.336l-3.276 3.277a3.004 3.004 0 0 1-2.25-2.25l3.276-3.276a4.5 4.5 0 0 0-6.336 4.486c.091 1.076-.071 2.264-.904 2.95l-.102.085m-1.745 1.437L5.909 7.5H4.5L2.25 3.75l1.5-1.5L7.5 4.5v1.409l4.26 4.26m-1.745 1.437 1.745-1.437m6.615 8.206L15.75 15.75M4.867 19.125h.008v.008h-.008v-.008Z" />
-                                                </svg>
-                                            </span>
-                                        </div>
-                                    </th>
                                 </tr>
                             </thead>
                             <tbody class="divide-y divide-gray-200">
@@ -225,11 +247,6 @@
                                     <td class="px-4 py-3 text-center">{{ index + 1 }}</td>
                                     <td class="px-4 py-3 text-center">{{ engaged.membership.role.slug }}</td>
                                     <td class="px-4 py-3 text-center">{{engaged.membership.account.name }}</td>
-                                    <td class="px-4 py-3 flex justify-center">
-                                        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="size-6 hover:text-red-500 hover:cursor-pointer">
-                                            <path stroke-linecap="round" stroke-linejoin="round" d="m14.74 9-.346 9m-4.788 0L9.26 9m9.968-3.21c.342.052.682.107 1.022.166m-1.022-.165L18.16 19.673a2.25 2.25 0 0 1-2.244 2.077H8.084a2.25 2.25 0 0 1-2.244-2.077L4.772 5.79m14.456 0a48.108 48.108 0 0 0-3.478-.397m-12 .562c.34-.059.68-.114 1.022-.165m0 0a48.11 48.11 0 0 1 3.478-.397m7.5 0v-.916c0-1.18-.91-2.164-2.09-2.201a51.964 51.964 0 0 0-3.32 0c-1.18.037-2.09 1.022-2.09 2.201v.916m7.5 0a48.667 48.667 0 0 0-7.5 0" />
-                                        </svg>
-                                    </td>
                                 </tr>
                             </tbody>
                         </table>
@@ -258,16 +275,6 @@
                                             </span>
                                         </div>
                                     </th>
-                                    <th class="px-4 py-3 text-center text-sm font-semibold text-gray-700">
-                                        <div class="flex flex-col items-center gap-1">
-                                            <span class="text-base">Action</span>
-                                            <span>
-                                                <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="size-6">
-                                                    <path stroke-linecap="round" stroke-linejoin="round" d="M11.42 15.17 17.25 21A2.652 2.652 0 0 0 21 17.25l-5.877-5.877M11.42 15.17l2.496-3.03c.317-.384.74-.626 1.208-.766M11.42 15.17l-4.655 5.653a2.548 2.548 0 1 1-3.586-3.586l6.837-5.63m5.108-.233c.55-.164 1.163-.188 1.743-.14a4.5 4.5 0 0 0 4.486-6.336l-3.276 3.277a3.004 3.004 0 0 1-2.25-2.25l3.276-3.276a4.5 4.5 0 0 0-6.336 4.486c.091 1.076-.071 2.264-.904 2.95l-.102.085m-1.745 1.437L5.909 7.5H4.5L2.25 3.75l1.5-1.5L7.5 4.5v1.409l4.26 4.26m-1.745 1.437 1.745-1.437m6.615 8.206L15.75 15.75M4.867 19.125h.008v.008h-.008v-.008Z" />
-                                                </svg>
-                                            </span>
-                                        </div>
-                                    </th>
                                 </tr>
                             </thead>
                             <tbody class="divide-y divide-gray-200">
@@ -277,11 +284,6 @@
                                 >
                                     <td class="px-4 py-3 text-center">{{ index + 1 }}</td>
                                     <td class="px-4 py-3 text-center">{{ dep['department'].title}}</td>
-                                    <td class="px-4 py-3 flex justify-center">
-                                        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="size-6 hover:text-red-500 hover:cursor-pointer">
-                                            <path stroke-linecap="round" stroke-linejoin="round" d="m14.74 9-.346 9m-4.788 0L9.26 9m9.968-3.21c.342.052.682.107 1.022.166m-1.022-.165L18.16 19.673a2.25 2.25 0 0 1-2.244 2.077H8.084a2.25 2.25 0 0 1-2.244-2.077L4.772 5.79m14.456 0a48.108 48.108 0 0 0-3.478-.397m-12 .562c.34-.059.68-.114 1.022-.165m0 0a48.11 48.11 0 0 1 3.478-.397m7.5 0v-.916c0-1.18-.91-2.164-2.09-2.201a51.964 51.964 0 0 0-3.32 0c-1.18.037-2.09 1.022-2.09 2.201v.916m7.5 0a48.667 48.667 0 0 0-7.5 0" />
-                                        </svg>
-                                    </td>
                                 </tr>
                             </tbody>
                         </table>
@@ -296,6 +298,9 @@
                         >
                             <!--  -->
                         </Uploader>
+                        <button class="flex justify-center item-center bg-[#8ee676] hover:bg-[#4b793f]">
+                            <span class="text-white text-xl hover:text-bold">submit</span>
+                        </button>
                     </div>
                     <div v-else-if="flag == 'links'">
                         <p>Links is clicked</p>
