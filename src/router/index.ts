@@ -23,6 +23,7 @@ import MembershipEdit from '@/views/membership/MembershipEdit.vue'
 import TaskList from '@/views/task/TaskList.vue'
 import TaskCreate from '@/views/task/TaskCreate.vue'
 import TaskDetail from '@/views/task/TaskDetail.vue'
+import TaskEdit from '@/views/task/TaskEdit.vue'
 
 import RecordShow from '@/views/record/RecordShow.vue'
 
@@ -151,6 +152,12 @@ const routes = [
         component: TaskDetail,
         meta: { requiresAuth: true }
     },
+    {
+      path: '/task/:id/edit',
+      name: 'TaskEdit',
+      component: TaskEdit,
+      meta: { requiresAuth: true }
+  },
     //-------------------
     {
         path: '/records',
