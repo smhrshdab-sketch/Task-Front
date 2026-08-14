@@ -9,7 +9,7 @@ import { v4 as uuid } from 'uuid';
     //=======================
     interface TaskDetail {
         id:number
-        department_id: string
+        department_id: number
         parent_id: number | null
         title: string
         description: string        
@@ -83,7 +83,7 @@ import { v4 as uuid } from 'uuid';
         url: string | null
     }
     interface TaskForm {
-        department_id: string
+        department_id: number
         parent_id: number | null
         title: string
         description: string        
@@ -105,16 +105,16 @@ import { v4 as uuid } from 'uuid';
     const pendingFiles = ref<File[]>([])
     const deletedFiles = ref<number[]>([])
     const colleague = ref<member[]>([])
+    const subDep = ref<member[]>([])
     const originalEngaged = ref<number[]>([])
     const finalEngage = ref<number[]>([])
     const engageDeleteSelect = ref<number[]>([])    
     const engageAddSelect = ref<number[]>([])
     const partnames = ['description','engaged','departments','attachments','links']        
     const flag = ref('')
-    const isSaving = ref(false)
-    //=========================
+    const isSaving = ref(false)    
     const formData = ref<TaskForm>({
-        department_id: '',
+        department_id:0,
         parent_id: null,
         title: '',
         description: '',        
@@ -126,6 +126,7 @@ import { v4 as uuid } from 'uuid';
         departments_engaged: [],
         attachments:[]
     })
+    //============= computeds ============
     const taskId = computed(() => route.params.id)
     const clearDeleteEngagedSelectedEnability = computed(() => {
         //console.log(`[computed]clearDeleteEngagedSelectedEnability: `,engageDeleteSelect.value.length > 0)
@@ -144,6 +145,18 @@ import { v4 as uuid } from 'uuid';
        //console.log(`[computed]addEngagedSelectedEnability: `,engageAddSelect.value.length > 0)
         return engageAddSelect.value.length > 0
     })    
+    //============ watches ================
+    watch(() => taskInfo.value, (newTask) => {
+        if (newTask?.department_id) {
+            // Update formData when taskInfo loads
+            formData.value.department_id = newTask.department_id
+            console.log('Updated formData.department_id to:', newTask.department_id)
+            
+            // Now fetch sub-departments
+            fetchSubDepartments()
+        }
+    }, { immediate: true })
+    //============ functions===============
     const lastEngaged = () => {
         console.log(`originalEngaged: `,originalEngaged.value)
         console.log(`finalEngage.value(first): `,finalEngage.value)
@@ -175,12 +188,11 @@ import { v4 as uuid } from 'uuid';
         const removeSet = new Set(finalEngage.value)        
         return colleague.value.filter(item => !removeSet.has(item.id))
     })
-    //================
-    //watch(engageDeleteSelect,(newVal) => {})
     const isValidForm = computed(() => {
         return formData.value.title.trim().length >= 3 && 
             formData.value.description.trim().length >= 10
     })
+    //====================
     const fetchTask = async () => {
         //isLoading.value = true
         errorMessage.value = ''
@@ -214,13 +226,21 @@ import { v4 as uuid } from 'uuid';
             formData.value.priority = taskInfo.value?.priority
             formData.value.path = taskInfo.value?.path
             formData.value.parent_id = taskInfo.value?.parent_id
-            formData.value.department_id = taskInfo.value?.department_id
+            //formData.value.department_id = taskInfo.value?.department_id ?? 0
             formData.value.deadline = taskInfo.value?.deadline            
             console.log(`taskInfo.value?.contributors.id: ${taskInfo.value?.contributors.contributor} and originalEngaged.value:`,originalEngaged.value)
+            if(taskInfo.value?.department_id){
+                formData.value.department_id = taskInfo.value?.department_id
+                console.log(`1taskInfo.value?.department_id is: `,taskInfo.value?.department_id)
+            }
+            else{
+                console.log(`2taskInfo.value?.department_id is: `,taskInfo.value?.department_id)
+                formData.value.department_id = 0
+            }
             
         } catch (error: any) {
             console.error('Failed to load taskInfo:', error)
-            errorMessage.value = error.response?.data?.message || 'Failed to load taskInfo'
+            errorMessage.value = error.response?.data?.message || 'Failed to loadtaskInfo.value?.department_idskInfo'
             taskInfo.value = []
         } finally {
             //isLoading.value = false
@@ -229,7 +249,7 @@ import { v4 as uuid } from 'uuid';
     const fetchColleagues = async () => {
         //isLoading.value = true
         errorMessage.value = ''
-        
+        console.log(`(fetchColleagues)Task Department Id: `,taskInfo.value)
         try {
             const response = await api.get(`department/memberships`);
 
@@ -244,6 +264,27 @@ import { v4 as uuid } from 'uuid';
             //isLoading.value = false
         }
     }
+    const fetchSubDepartments = async () => {
+        //isLoading.value = true
+        errorMessage.value = ''
+        if(taskInfo.value?.department_id){
+            console.log(`Task Departmelnt Id: `,taskInfo.value?.department_id)
+            try {
+                const response = await api.get(`sub/department/${taskInfo.value?.department_id}`);
+
+                subDep.value = response.data.data || []
+                console.info(`SubDepartment loaded: `, subDep.value)
+                
+            } catch (error: any) {
+                console.error('Failed to load SubDepartment:', error)
+                errorMessage.value = error.response?.data?.message || 'Failed to load colleague'
+                subDep.value = []
+            }
+        }    
+        else{
+            console.log(`Department id still is not set`)
+        }            
+    }
     const handleFilesUploaded = (files: File[]) => {
         console.log("Files received from uploader, waiting for submit...");
         pendingFiles.value = files; 
@@ -254,7 +295,7 @@ import { v4 as uuid } from 'uuid';
         deletedFiles.value = ids; 
         console.log(`(emit)DeletedFiles[deletedFiles.value]: `,deletedFiles.value)
     }
-    const updateTask= async () => {
+    const updateJustTask= async () => {
         if(!taskInfo.value) return
 
         if (!isValidForm.value) {
@@ -413,6 +454,7 @@ import { v4 as uuid } from 'uuid';
     onMounted(() => {
         fetchTask()
         fetchColleagues()
+        fetchSubDepartments()
     })
 </script>
 <template>
